@@ -1,0 +1,41 @@
+# Use the official Python image from the Docker Hub
+#FROM python:3.9-slim
+
+# Set the working directory in the container
+#WORKDIR /app
+
+# Copy the script into the container
+#COPY server.py /app
+
+# Install Flask
+#RUN pip install Flask
+
+# Set the environment variable for Flask
+#ENV FLASK_APP=server.py
+
+# Expose the port on which Flask will run
+#EXPOSE 8181
+
+# Run the Flask app
+#CMD ["flask", "run", "--host=0.0.0.0", "--port=8181"]
+
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the script into the container
+COPY server.py /app
+
+# Install Flask and Prometheus client
+RUN pip install Flask prometheus_client
+
+# Set the environment variable for Flask
+ENV FLASK_APP=server.py
+
+# Expose ports for Flask and Prometheus metrics
+EXPOSE 8181
+EXPOSE 8182
+
+# Run both Flask app and Prometheus metrics server
+CMD ["python", "server.py"]

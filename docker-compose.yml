@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  grafana:
+    container_name: Grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring
+
+  prometheus:
+    container_name: Prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
+
+  node_exporter:
+    container_name: node_exporter
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring
+
+  server_1:
+    container_name: server_1 
+    image: my-flask-app-1
+    ports:
+      - "8181:8181"
+      - "8182:8182"
+    networks:
+      - monitoring
+
+  server_2:
+    container_name: server_2
+    image: my-flask-app-2
+    ports:
+      - "8282:8282"
+      - "8283:8283"
+    networks:
+      - monitoring
+
+  server_3:
+    container_name: server_3
+    image: my-flask-app-3
+    ports:
+      - "8383:8383"
+      - "8384:8384"
+    networks:
+      - monitoring  
+
+  openresty:
+    container_name: load-balancer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
